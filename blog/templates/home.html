@@ -1,30 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLOG</title>
-    <style>
-        body{
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    <h1>Blog Project</h1>
-    <div>
-        <a href="{%url 'new'%}">write blog</a>
-    </div>
-    <div class="container">
-    {% for blog in blogs%}
-        <div>
-        <h3>{{blog.title}}</h3>
-        {{blog.writer}}
-        {{blog.summary}} <a href="{%url 'detail' blog.id %}">...more</a>
-        <br>
+{% extends 'base.html'%}
+
+{% block content%}
+    {% if user.is_authenticated %}
+    <h1><span style="color:olivedrab">{{user.nickname}}</span>님 환영합니다</h1>
+    {% endif %}
+    {% if not user.is_authenticated %}
+    <h1 style="padding:10px">로그인해주세요</h1>
+    {% endif %}
+    <a href="?search=true&writer={{user.nickname}}">내가 쓴 글</a>
+    <hr>
+
+    <div class="row_container">
+      <div class="row row-cols-4">
+      {% for blog in blogs%}
+        <div class="col" style="padding:10px;">
+            <h5 style="color:orange">{{blog.title}}</h5>
+            <p>
+                {% if blog.image %}
+                <p><img src="{{blog.image.url}}" alt="" width="100%" height="150px"></p>
+                {% endif %}
+            </p>
+            <p>{{blog.summary}}</p>
+            <a href="{%url 'detail' blog.id %}">...more</a>
         </div>
-    {% endfor %}
+        {% endfor %}
+      </div>
     </div>
-</body>
-</html>
+
+    {% if blogs.has_previous %}
+        <a href="?page=1">처음</a>
+        <a href="?page={{blogs.previous_page_number}}">이전</a>
+    {% endif %}
+    <span>{{blogs.number}}</span>
+    <span>of</span>
+    <span>{{blogs.paginator.num_pages}}</span>
+    
+
+    {% if blogs.has_next %}
+    <a href="?page={{blogs.next_page_number}}">다음</a>
+    <a href="?page={{blogs.paginator.num_pages}}">마지막</a>
+    {% endif %}
+{% endblock %}

@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h1>Update Your Blog</h1>
 
 <form action="{%url 'update' blog.id %}" method="post">
@@ -7,3 +11,5 @@
     본문 : <textarea name="body" id="" cols="30" rows="10">{{blog.body}}</textarea>
     <button type="submit">submit</button>
 </form>
+
+{% endblock %}
